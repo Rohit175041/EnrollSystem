@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
-
 	"github.com/rohit154041/students-api/internal/config"
 	"github.com/rohit154041/students-api/internal/http/handlers/student"
 )
@@ -17,17 +16,15 @@ import (
 func main() {
 	// load config
 	cfg := config.MustLoad()
-	
+
 	// database setup
 
 	// setup router
 	router := http.NewServeMux()
 
-	router.HandleFunc("POST /api/students", student.New())
-	// router.HandleFunc("GET /api/students/{id}", student.GetById(storage))
-	// router.HandleFunc("GET /api/students", student.GetList(storage))
-	// setup server
+	router.HandleFunc("GET /api/students", student.New())
 
+	// setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
 		Handler: router,
