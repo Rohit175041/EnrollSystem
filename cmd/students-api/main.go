@@ -15,8 +15,6 @@ func main() {
 	// Custom logger setup
 	myLogger, loggerErr := logger.NewLogger(logger.INFO, cfg.LogPath)
 	if loggerErr != nil {
-		// Here we can't use myLogger yet, fallback to standard log.Fatal
-		// Or you can write to a fallback file as discussed before
 		panic(fmt.Sprintf("Failed to create logger: %v", loggerErr))
 	}
 	defer myLogger.Close()
