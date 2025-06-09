@@ -10,24 +10,28 @@ import (
 	"syscall"
 	"time"
 	"github.com/rohit154041/students-api/internal/config"
-	"github.com/rohit154041/students-api/internal/http/handlers/student"
+	"github.com/rohit154041/students-api/internal/router"
+	"github.com/rohit154041/students-api/internal/storage"
 )
 
 func main() {
 	// load config
 	cfg := config.MustLoad()
 
-	// database setup
+	// Initialize MongoDB connection (just call once)
+	if err := storage.Init(cfg.MongoURI); err != nil {
+		slog.Error("failed to connect to MongoDB", slog.String("error", err.Error()))
+		return
+	}
+	defer storage.Disconnect() // Clean disconnect on shutdown
 
 	// setup router
-	router := http.NewServeMux()
-
-	router.HandleFunc("GET /api/students", student.New())
+	mux := router.Init()
 
 	// setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
-		Handler: router,
+		Handler: mux,
 	}
 
 	slog.Info("server started", slog.String("address", cfg.Addr))
@@ -55,5 +59,4 @@ func main() {
 	}
 
 	slog.Info("server shutdown successfully")
-
 }

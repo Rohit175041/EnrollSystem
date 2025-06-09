@@ -1,5 +1,5 @@
 env: "dev"
-log_path: "log_file/app.log"
+MongoURI: "mongodb+srv://rohit:rohit123@cluster0.60lubst.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 storage_path: "storage/storage.db"
 http_server:
   address: "localhost:8082"

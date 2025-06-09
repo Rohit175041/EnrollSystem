@@ -5,46 +5,46 @@ import (
 	"net/http"
 )
 
+// Response is the base response structure
 type Response struct {
-	Status string `json:"status"`
-	Error  string `json:"error"`
+	Status  string `json:"status"`            // "success", "error", "fail"
+	Message string `json:"message,omitempty"` // optional message
+	Error   string `json:"error,omitempty"`   // error message if any
 }
 
 const (
-	StatusOK    = "OK"
-	StatusError = "Error"
+	StatusSuccess = "success"
+	StatusFail    = "fail"
+	StatusError   = "error"
 )
 
-func WriteJson(w http.ResponseWriter, status int, data interface{}) error {
-
+// WriteJSON writes JSON response with given HTTP status code
+func WriteJSON(w http.ResponseWriter, status int, resp Response) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-
-	return json.NewEncoder(w).Encode(data)
+	return json.NewEncoder(w).Encode(resp)
 }
 
-func GeneralError(err error) Response {
+// Success returns a success response with optional data and message
+func Success(message string) Response {
+	return Response{
+		Status:  StatusSuccess,
+		Message: message,
+	}
+}
+
+// Fail returns a failure response with message (e.g. validation errors)
+func Fail(message string) Response {
+	return Response{
+		Status:  StatusFail,
+		Message: message,
+	}
+}
+
+// Error returns an error response with error message
+func Error(err error) Response {
 	return Response{
 		Status: StatusError,
 		Error:  err.Error(),
 	}
 }
-
-// func ValidationError(errs validator.ValidationErrors) Response {
-// 	var errMsgs []string
-
-// 	for _, err := range errs {
-// 		switch err.ActualTag() {
-// 		case "required":
-// 			errMsgs = append(errMsgs, fmt.Sprintf("field %s is required field", err.Field()))
-// 		default:
-// 			errMsgs = append(errMsgs, fmt.Sprintf("field %s is  invalid", err.Field()))
-// 		}
-// 	}
-
-// 	return Response{
-// 		Status: StatusError,
-// 		Error:  strings.Join(errMsgs, ", "),
-// 	}
-
-// }

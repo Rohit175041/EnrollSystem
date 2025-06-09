@@ -16,7 +16,7 @@ type HTTPServer struct {
 
 type Config struct {
 	Env         string `yaml:"env" env:"ENV" env-required:"true"`
-	LogPath     string      `yaml:"log_path" env-required:"true"`
+	MongoURI     string      `yaml:"MongoURI" env-required:"true"`
 	StoragePath string `yaml:"storage_path" env-required:"true"`
 	HTTPServer  `yaml:"http_server"`
 }
