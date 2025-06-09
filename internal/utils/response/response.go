@@ -7,10 +7,12 @@ import (
 
 // Response is the base response structure
 type Response struct {
-	Status  string `json:"status"`            // "success", "error", "fail"
-	Message string `json:"message,omitempty"` // optional message
-	Error   string `json:"error,omitempty"`   // error message if any
+	Status  string      `json:"status"`            // "success", "error", "fail"
+	Message string      `json:"message,omitempty"` // optional message
+	Error   string      `json:"error,omitempty"`   // error message if any
+	Data    interface{} `json:"data,omitempty"`    // any data payload for success responses
 }
+
 
 const (
 	StatusSuccess = "success"
@@ -26,12 +28,24 @@ func WriteJSON(w http.ResponseWriter, status int, resp Response) error {
 }
 
 // Success returns a success response with optional data and message
-func Success(message string) Response {
-	return Response{
-		Status:  StatusSuccess,
+func Success(message string, data ...interface{}) Response {
+	resp := Response{
+		Status:  "success",
 		Message: message,
 	}
+
+	if len(data) > 0 {
+		resp.Data = data[0]
+	}
+
+	return resp
 }
+// func Success(message string) Response {
+// 	return Response{
+// 		Status:  StatusSuccess,
+// 		Message: message,
+// 	}
+// }
 
 // Fail returns a failure response with message (e.g. validation errors)
 func Fail(message string) Response {
